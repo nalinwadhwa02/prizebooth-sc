@@ -1,0 +1,3 @@
+96b716cdc7b2415e527c02e752471e7b887699044dbb14cdd174e6f636fe5300  target/wasm32-unknown-unknown/release/admin.wasm
+4f2d9b088990760296f9c97b3d1553d944cf530db1a73d06463b1883443c4e4d  target/wasm32-unknown-unknown/release/cw20_base.wasm
+03742b1098bc9fdaac7ea2252bffd04efb08fdbe7dec0f4182effc08dd67bac7  target/wasm32-unknown-unknown/release/prizebooth.wasm
