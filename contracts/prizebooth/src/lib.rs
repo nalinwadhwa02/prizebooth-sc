@@ -33,6 +33,7 @@ pub fn execute (
         ExecuteMsg::ReceiveNft(msg) => execute::recieve_nft(deps, env, info, msg),
         ExecuteMsg::RemoveNft { poolid, token_id } => execute::remove_nft(deps, env, info, poolid, token_id),
         ExecuteMsg::RemovePrizePool { poolid } => execute::remove_prizepool(deps, env, info, poolid),
+        ExecuteMsg::ChangePoolState { poolid, state } => execute::change_pool_state(deps, env, info, poolid, state),
     }
 }
 

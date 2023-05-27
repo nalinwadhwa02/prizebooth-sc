@@ -3,15 +3,12 @@ pub mod tests {
     use my_cw20;
     use my_cw721;
 
-    use cosmwasm_std::testing::{mock_dependencies, mock_env, mock_info};
-    use cosmwasm_std::{Response, to_binary, Uint128, Addr, Empty, from_binary, CosmosMsg, WasmMsg};
-    use cw20::{Cw20ReceiveMsg, Balance, Cw20Coin, MinterResponse};
+    use cosmwasm_std::{to_binary, Uint128, Addr, Empty};
+    use cw20::{Cw20Coin, MinterResponse};
     use cw_multi_test::{App, ContractWrapper, Executor};
-    use crate::state::Prizepool;
+    use crate::state::{Prizepool, PoolState};
     use crate::{execute, instantiate, query};
     use crate::msg::{ReceiveTokenMsg, ExecuteMsg, InstantiateMsg, ReceiveNftMsg, QueryMsg};
-
-    #[test]
 
     #[test]
     fn multi_contract_test () {
@@ -72,21 +69,21 @@ pub mod tests {
             Some("owner".to_owned())
         ).unwrap();
 
-        let contractminter_resp = app.execute_contract(
+        let _contractminter_resp = app.execute_contract(
             Addr::unchecked("owner"),
             tokentract_addr.clone(), 
             &my_cw20::msg::ExecuteMsg::UpdateMinter { new_minter: Some(pbtract_addr.clone().to_string()) }, 
             &[]
         ).unwrap();
 
-        let crp_resp = app.execute_contract(
+        let _crp_resp = app.execute_contract(
             Addr::unchecked("owner"), 
             pbtract_addr.clone(), 
             &ExecuteMsg::CreatePrizePool { mintprice: Uint128::new(5) }, 
             &[]
         ).unwrap();
 
-        let mintnft_resp = app.execute_contract(
+        let _mintnft_resp = app.execute_contract(
             Addr::unchecked("owner"), 
             nfttract_addr.clone(), 
             &my_cw721::msg::ExecuteMsg::<Empty,Empty>::Mint { 
@@ -98,7 +95,7 @@ pub mod tests {
             &[]
         ).unwrap();
 
-        let anft_resp = app.execute_contract(
+        let _anft_resp = app.execute_contract(
             Addr::unchecked("owner"), 
             nfttract_addr.clone(), 
             &my_cw721::msg::ExecuteMsg::<Empty,Empty>::SendNft { 
@@ -118,7 +115,17 @@ pub mod tests {
         let nftownerresp: cw721::OwnerOfResponse = app.wrap().query_wasm_smart(nfttract_addr.clone(), &my_cw721::msg::QueryMsg::<Empty>::OwnerOf { token_id: "nft1".to_owned(), include_expired: None }).unwrap();
         assert_eq!(nftownerresp.owner, pbtract_addr.to_string());
 
-        let tokentrans = app.execute_contract(
+        let _poolopenresp = app.execute_contract(
+            Addr::unchecked("owner"), 
+            pbtract_addr.clone(), 
+            &ExecuteMsg::ChangePoolState { 
+                poolid: 0, 
+                state: PoolState::Open 
+            }, 
+            &[]
+        ).unwrap();
+
+        let _tokentrans = app.execute_contract(
             Addr::unchecked("owner"), 
             tokentract_addr.clone(), 
             &my_cw20::msg::ExecuteMsg::Transfer { 
@@ -128,7 +135,7 @@ pub mod tests {
             &[]
         ).unwrap();
 
-        let mintresp = app.execute_contract(
+        let _mintresp = app.execute_contract(
             Addr::unchecked("minter"),
             tokentract_addr.clone(), 
             &my_cw20::msg::ExecuteMsg::Send { 
@@ -147,7 +154,6 @@ pub mod tests {
 
         let poollistresp: Vec<Prizepool>  = app.wrap().query_wasm_smart(pbtract_addr.clone(), &QueryMsg::PoolList {  }).unwrap();
         assert_eq!(poollistresp[0].admin, "owner");
-        // assert_eq!(poollistresp[0].nft_list, Vec::<String>::new());
 
         let nftownerresp: cw721::OwnerOfResponse = app.wrap().query_wasm_smart(nfttract_addr, &my_cw721::msg::QueryMsg::<Empty>::OwnerOf { token_id: "nft1".to_owned(), include_expired: None }).unwrap();
         assert_eq!(nftownerresp.owner, "minter".to_owned());

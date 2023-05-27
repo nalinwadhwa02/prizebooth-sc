@@ -16,5 +16,9 @@ pub enum ContractError {
     #[error("{poolid} has no NFTs to mint")]
     ZeroLenNftList {poolid: u32},
     #[error("{poolid} has NFTs in its list")]
-    NonZeroNftList {poolid: u32}
+    NonZeroNftList {poolid: u32},
+    #[error("{poolid} pool state closed")]
+    PoolStateClosed {poolid: u32},
+    #[error("{addr} Unauthorized; pool {poolid} state restricted")]
+    UnauthorizedPoolMint {poolid: u32, addr: Addr},
 }

@@ -1,9 +1,9 @@
 use cosmwasm_schema::{cw_serde, QueryResponses};
-use cosmwasm_std::Uint128;
+use cosmwasm_std::{Uint128};
 use cw20::Cw20ReceiveMsg;
 use cw721::Cw721ReceiveMsg;
 
-use crate::state::Prizepool;
+use crate::state::{Prizepool, PoolState};
 
 
 
@@ -20,6 +20,7 @@ pub enum ExecuteMsg {
     Receive (Cw20ReceiveMsg),
     ReceiveNft (Cw721ReceiveMsg),
     RemoveNft {poolid: u32, token_id: String},
+    ChangePoolState {poolid: u32, state: PoolState},
 }
 
 #[cw_serde]

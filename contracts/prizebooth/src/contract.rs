@@ -5,7 +5,7 @@ use rand::{thread_rng, Rng};
 use my_cw721;
 use my_cw20;
 
-use crate::state::{POOLS, Prizepool, POOLSIZE, CW20_ADDR, CW721_ADDR};
+use crate::state::{POOLS, Prizepool, POOLSIZE, CW20_ADDR, CW721_ADDR, PoolState};
 use crate::error::ContractError;
 
 use crate::msg::{ReceiveTokenMsg, ReceiveNftMsg };
@@ -27,7 +27,7 @@ pub mod instantiate {
         CW20_ADDR.save(deps.storage, &cw20)?;
         let resp = Response::new()
             .add_attribute("action", "instantiate")
-            .add_attribute("instantiator_address", info.sender.to_string())
+            .add_attribute("instantiate_address", info.sender.to_string())
             .add_attribute("cw721_address", cw721_addr)
             .add_attribute("cw20_address", cw20_addr);
         Ok(resp)
@@ -35,8 +35,6 @@ pub mod instantiate {
 }
 
 pub mod execute {
-
-
 
     use super::*;
 
@@ -51,6 +49,7 @@ pub mod execute {
             creation_time: env.block.time.clone(),
             nft_list: vec![],
             mintprice: mp,
+            state: PoolState::Closed,
         };
         let mut poolsize = POOLSIZE.may_load(deps.storage)?.unwrap_or(0);
         POOLS.save(deps.storage, poolsize.clone(), &newpool)?;
@@ -122,12 +121,15 @@ pub mod execute {
     ) -> Result<Response, ContractError> { 
 
         let mut pool = POOLS.may_load(deps.storage, poolid)?.unwrap();
+        if pool.state == PoolState::Closed {
+            return Err(ContractError::PoolStateClosed { poolid: poolid });
+        }
+
         let nftlistsize = pool.nft_list.len();
         //handle empty list edge case
         if nftlistsize == 0 {
             return Err(ContractError::ZeroLenNftList { poolid: poolid });
         }
-        
         //check if balance is enough to buy
         if pool.mintprice != tokensent {
             return Err(ContractError::UnequalTokensToMint { t: tokensent });
@@ -264,7 +266,36 @@ pub mod execute {
             .add_attribute("admin", info.sender.to_string());
         Ok(resp)
     }
-    
+
+    pub fn change_pool_state (
+        deps: DepsMut,
+        _env: Env,
+        info: MessageInfo,
+        poolid: u32,
+        state: PoolState
+    ) -> Result<Response, ContractError> {
+        let mut pool = POOLS.may_load(deps.storage, poolid)?.unwrap();
+        if pool.admin != info.sender.clone() {
+            return Err(ContractError::UnauthorizedAdmin { sender: info.sender });
+        }
+        pool.state = state.clone();
+        let update_prizepool = |d: Option<Prizepool> | -> StdResult<Prizepool> {
+            match d {
+                Some(_) => Ok(pool),
+                None => Ok(pool),
+            }
+        };
+        POOLS.update(deps.storage, poolid, update_prizepool)?;
+        let resp = Response::new()
+            .add_attribute("action", "change_pool_state")
+            .add_attribute("admin", info.sender.to_string())
+            .add_attribute("state", state.to_string())
+            .add_attribute("poolid", poolid.to_string());
+
+        Ok(resp)
+    }
+
+
 
 }
 
