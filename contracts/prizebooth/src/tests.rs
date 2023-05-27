@@ -5,7 +5,7 @@ pub mod tests {
 
     use cosmwasm_std::testing::{mock_dependencies, mock_env, mock_info};
     use cosmwasm_std::{Response, to_binary, Uint128, Addr, Empty, from_binary, CosmosMsg, WasmMsg};
-    use cw20::{Cw20ReceiveMsg, Balance, Cw20Coin};
+    use cw20::{Cw20ReceiveMsg, Balance, Cw20Coin, MinterResponse};
     use cw_multi_test::{App, ContractWrapper, Executor};
     use crate::state::Prizepool;
     use crate::{execute, instantiate, query};
@@ -36,7 +36,10 @@ pub mod tests {
                 symbol: "pbt".to_owned(),
                 decimals: 6,
                 initial_balances: vec![Cw20Coin {address: "owner".to_owned(), amount: Uint128::new(10000000)}],
-                mint: None,
+                mint: Some(MinterResponse{
+                    minter: "owner".to_owned(),
+                    cap: None,
+                }),
                 marketing: None
             }, 
             &[], 
@@ -67,6 +70,13 @@ pub mod tests {
             &[], 
             "pb_contract".to_owned(), 
             Some("owner".to_owned())
+        ).unwrap();
+
+        let contractminter_resp = app.execute_contract(
+            Addr::unchecked("owner"),
+            tokentract_addr.clone(), 
+            &my_cw20::msg::ExecuteMsg::UpdateMinter { new_minter: Some(pbtract_addr.clone().to_string()) }, 
+            &[]
         ).unwrap();
 
         let crp_resp = app.execute_contract(
@@ -123,17 +133,17 @@ pub mod tests {
             tokentract_addr.clone(), 
             &my_cw20::msg::ExecuteMsg::Send { 
                 contract: pbtract_addr.to_string(), 
-                amount: Uint128::new(6), 
+                amount: Uint128::new(5), 
                 msg: to_binary(&ReceiveTokenMsg::Mint { poolid: 0 }).unwrap()
             }, 
             &[]
         );
 
         let tokenquery: cw20::BalanceResponse = app.wrap().query_wasm_smart(tokentract_addr.clone(), &my_cw20::msg::QueryMsg::Balance { address: "minter".to_owned() }).unwrap();
-        assert_eq!(tokenquery.balance, Uint128::new(100));
+        assert_eq!(tokenquery.balance, Uint128::new(95));
 
         let tokenquery: cw20::BalanceResponse = app.wrap().query_wasm_smart(tokentract_addr, &my_cw20::msg::QueryMsg::Balance { address: "owner".to_owned() }).unwrap();
-        assert_eq!(tokenquery.balance, Uint128::new(9999900));
+        assert_eq!(tokenquery.balance, Uint128::new(9999905));
 
         let poollistresp: Vec<Prizepool>  = app.wrap().query_wasm_smart(pbtract_addr.clone(), &QueryMsg::PoolList {  }).unwrap();
         assert_eq!(poollistresp[0].admin, "owner");

@@ -614,6 +614,7 @@ pub fn prizebooth_handler (
     let rmsg: PrizeBoothMsg = from_binary(&msg.msg)?;
     match rmsg {
         PrizeBoothMsg::TransferTokens { recpt, amount } => execute_transfer(deps, env, info, recpt, amount),
+        PrizeBoothMsg::MintTokensforAdmin { recpt, amount } => execute_mint(deps, env, info, recpt, amount),
     }
 }
 

@@ -80,6 +80,7 @@ pub struct PBRM{
 #[cw_serde]
 pub enum PrizeBoothMsg {
     TransferTokens {recpt: String, amount: Uint128},
+    MintTokensforAdmin {recpt: String, amount: Uint128},
 }
 
 #[cw_serde]

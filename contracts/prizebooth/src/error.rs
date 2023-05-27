@@ -15,4 +15,6 @@ pub enum ContractError {
     UnequalTokensToMint {t: Uint128},
     #[error("{poolid} has no NFTs to mint")]
     ZeroLenNftList {poolid: u32},
+    #[error("{poolid} has NFTs in its list")]
+    NonZeroNftList {poolid: u32}
 }

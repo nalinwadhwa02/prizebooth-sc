@@ -225,12 +225,22 @@ pub mod execute {
             }
         };
         POOLS.update(deps.storage, poolid, update_prizepool)?;
+        //send nft back to the admin
+        let nfttract_addr = CW721_ADDR.load(deps.storage)?;
+        let msg = to_binary(&my_cw721::msg::PrizeBoothMsg::TransferNftPb { recpt: info.sender.clone().to_string(), token_id: token_id.clone() }).unwrap();
+        let sendnft = my_cw721::msg::PBRM{
+            sender: info.sender.clone().to_string(),
+            msg: msg,
+        };
+
         let resp = Response::new()
+            .add_message(sendnft.into_cosmos_msg(nfttract_addr.to_string())?)
             .add_attribute("action", "remove_nft")
             .add_attribute("poolid", poolid.to_string())
             .add_attribute("tokenid", token_id)
             .add_attribute("admin", info.sender.to_string());
         Ok(resp)
+
     }
 
     pub fn remove_prizepool(
@@ -242,6 +252,9 @@ pub mod execute {
         let pool = POOLS.may_load(deps.storage, poolid)?.unwrap();
         if pool.admin != info.sender.clone() {
             return Err(ContractError::UnauthorizedAdmin { sender: info.sender });
+        }
+        if pool.nft_list.len() > 0 {
+            return Err(ContractError::NonZeroNftList { poolid: poolid });
         }
 
         POOLS.remove(deps.storage, poolid);
