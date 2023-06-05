@@ -1,6 +1,6 @@
 use cosmwasm_schema::write_api;
 
-use prizebooth::msg::{InstantiateMsg, ExecuteMsg, QueryMsg};
+use cw721_metadata_onchain::{ExecuteMsg, InstantiateMsg, QueryMsg};
 
 fn main() {
     write_api! {
@@ -9,4 +9,3 @@ fn main() {
         query: QueryMsg,
     }
 }
-

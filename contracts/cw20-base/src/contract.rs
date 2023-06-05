@@ -2,7 +2,7 @@
 use cosmwasm_std::entry_point;
 use cosmwasm_std::Order::Ascending;
 use cosmwasm_std::{
-    to_binary, Binary, Deps, DepsMut, Env, MessageInfo, Response, StdError, StdResult, Uint128, from_binary,
+    to_binary, Binary, Deps, DepsMut, Env, MessageInfo, Response, StdError, StdResult, Uint128,
 };
 
 use cw2::set_contract_version;
@@ -18,7 +18,7 @@ use crate::allowances::{
 };
 use crate::enumerable::{query_all_accounts, query_owner_allowances, query_spender_allowances};
 use crate::error::ContractError;
-use crate::msg::{ExecuteMsg, InstantiateMsg, MigrateMsg, QueryMsg, PBRM, PrizeBoothMsg};
+use crate::msg::{ExecuteMsg, InstantiateMsg, MigrateMsg, QueryMsg};
 use crate::state::{
     MinterData, TokenInfo, ALLOWANCES, ALLOWANCES_SPENDER, BALANCES, LOGO, MARKETING_INFO,
     TOKEN_INFO,
@@ -232,8 +232,7 @@ pub fn execute(
         ExecuteMsg::UploadLogo(logo) => execute_upload_logo(deps, env, info, logo),
         ExecuteMsg::UpdateMinter { new_minter } => {
             execute_update_minter(deps, env, info, new_minter)
-        },
-        ExecuteMsg::ReceivePbMsg(msg) => prizebooth_handler(deps, env, info, msg),
+        }
     }
 }
 
@@ -602,20 +601,6 @@ pub fn migrate(deps: DepsMut, _env: Env, _msg: MigrateMsg) -> Result<Response, C
         }
     }
     Ok(Response::default())
-
-}
-
-pub fn prizebooth_handler (
-    deps: DepsMut,
-    env: Env,
-    info: MessageInfo,
-    msg: PBRM,
-) -> Result<Response, ContractError> {
-    let rmsg: PrizeBoothMsg = from_binary(&msg.msg)?;
-    match rmsg {
-        PrizeBoothMsg::TransferTokens { recpt, amount } => execute_transfer(deps, env, info, recpt, amount),
-        PrizeBoothMsg::MintTokensforAdmin { recpt, amount } => execute_mint(deps, env, info, recpt, amount),
-    }
 }
 
 #[cfg(test)]

@@ -1,0 +1,58 @@
+<mxfile host="Electron" modified="2023-06-03T07:15:26.917Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.2.8 Chrome/112.0.5615.165 Electron/24.2.0 Safari/537.36" etag="2suO8scUQxuoGnmXgYg9" version="21.2.8" type="device">
+  <diagram name="Page-1" id="WMy46IPan90cm104xRGQ">
+    <mxGraphModel dx="1185" dy="685" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="Q97gwF7Si06LRpPnpVqn-3" value="cw20_base" style="swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="40" width="160" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="Q97gwF7Si06LRpPnpVqn-11" value="mint" style="whiteSpace=wrap;html=1;" vertex="1" parent="Q97gwF7Si06LRpPnpVqn-3">
+          <mxGeometry x="20" y="70" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Q97gwF7Si06LRpPnpVqn-12" value="burn" style="whiteSpace=wrap;html=1;" vertex="1" parent="Q97gwF7Si06LRpPnpVqn-3">
+          <mxGeometry x="20" y="110" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Q97gwF7Si06LRpPnpVqn-5" value="cw721_base" style="swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="320" y="40" width="160" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="Q97gwF7Si06LRpPnpVqn-13" value="transfer" style="whiteSpace=wrap;html=1;" vertex="1" parent="Q97gwF7Si06LRpPnpVqn-5">
+          <mxGeometry x="20" y="30" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Q97gwF7Si06LRpPnpVqn-14" value="mint" style="whiteSpace=wrap;html=1;" vertex="1" parent="Q97gwF7Si06LRpPnpVqn-5">
+          <mxGeometry x="20" y="70" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Q97gwF7Si06LRpPnpVqn-15" value="burn" style="whiteSpace=wrap;html=1;" vertex="1" parent="Q97gwF7Si06LRpPnpVqn-5">
+          <mxGeometry x="20" y="110" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Q97gwF7Si06LRpPnpVqn-16" value="import" style="whiteSpace=wrap;html=1;" vertex="1" parent="Q97gwF7Si06LRpPnpVqn-5">
+          <mxGeometry x="20" y="150" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Q97gwF7Si06LRpPnpVqn-7" value="prizepools" style="swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="280" width="160" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="Q97gwF7Si06LRpPnpVqn-18" value="create/remove pool" style="whiteSpace=wrap;html=1;" vertex="1" parent="Q97gwF7Si06LRpPnpVqn-7">
+          <mxGeometry x="20" y="30" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Q97gwF7Si06LRpPnpVqn-19" value="add/remove token" style="whiteSpace=wrap;html=1;" vertex="1" parent="Q97gwF7Si06LRpPnpVqn-7">
+          <mxGeometry x="20" y="70" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Q97gwF7Si06LRpPnpVqn-20" value="redeem token" style="whiteSpace=wrap;html=1;" vertex="1" parent="Q97gwF7Si06LRpPnpVqn-7">
+          <mxGeometry x="20" y="110" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Q97gwF7Si06LRpPnpVqn-8" value="transfer" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="100" y="70" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Q97gwF7Si06LRpPnpVqn-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="Q97gwF7Si06LRpPnpVqn-8" target="Q97gwF7Si06LRpPnpVqn-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Q97gwF7Si06LRpPnpVqn-21" value="pb_handler" style="swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="440" y="280" width="160" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="Q97gwF7Si06LRpPnpVqn-22" value="create/remove poolset" style="whiteSpace=wrap;html=1;" vertex="1" parent="Q97gwF7Si06LRpPnpVqn-21">
+          <mxGeometry x="20" y="30" width="120" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
