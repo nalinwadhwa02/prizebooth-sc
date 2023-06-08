@@ -1,4 +1,0 @@
-c6ed385b07c48f632e4ad27c4ae06e7cb3d7ca05ae7e23f5ea4a93049e3e15e2  ./target/wasm32-unknown-unknown/release/cw20_base.wasm
-51678ab550a13461ef847c4a09a5bf010d757f06f3b3adf874e704ed7ca85599  ./target/wasm32-unknown-unknown/release/cw721_metadata_onchain.wasm
-30d307907cab0d5ddc85d5b7aec528240fe20558c9431961a69a59873c5e7a34  ./target/wasm32-unknown-unknown/release/my_cw20.wasm
-9b7e5e54242521d353342a857e104056c09e703c6304dc36241be4cf8f783342  ./target/wasm32-unknown-unknown/release/prizebooth.wasm
