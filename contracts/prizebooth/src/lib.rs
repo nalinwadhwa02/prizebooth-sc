@@ -44,9 +44,12 @@ pub fn execute (
 
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn query (
-    _deps: Deps,
-    _env: Env,
-    _msg: QueryMsg,
+    deps: Deps,
+    env: Env,
+    msg: QueryMsg,
 ) -> StdResult<Binary> {
-    Ok(Binary::from(b""))
+    match msg {
+        QueryMsg::PoolInfo { poolid } => query::query_pool_info(deps, env, poolid),
+        QueryMsg::NumPools {  } => query::query_num_pools(deps, env),
+    }
 }

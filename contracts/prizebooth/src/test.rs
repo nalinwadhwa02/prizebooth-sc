@@ -6,7 +6,7 @@ mod tests {
     use cw_multi_test::{App, ContractWrapper, Contract, Executor};
     use cosmwasm_std::{Empty, Addr, Uint128, to_binary};
 
-    use crate::{execute, instantiate, query, msg::{InstantiateMsg, ExecuteMsg, RecieveNftMsg, RecieveTokenMsg}};
+    use crate::{execute, instantiate, query, msg::{InstantiateMsg, ExecuteMsg, RecieveNftMsg, RecieveTokenMsg, NumPoolsResponse, QueryMsg, PoolInfoResponse}};
 
     #[test]
     fn message_test () {
@@ -142,7 +142,12 @@ mod tests {
         let user_nfts: TokensResponse = app.wrap().query_wasm_smart(cw721_addr.clone(), &cw721::Cw721QueryMsg::Tokens { owner: user_addr.clone().to_string(), start_after: None, limit: None}).unwrap();
         println!("owner: {:?}\npb: {:?}\nuser: {:?}", owner_nfts, pb_nfts, user_nfts);
 
-        assert_eq!(1, 0);
+        let numpools: NumPoolsResponse = app.wrap().query_wasm_smart(pb_addr.clone(), &QueryMsg::NumPools {}).unwrap();
+        let poolinfo: PoolInfoResponse = app.wrap().query_wasm_smart(pb_addr.clone(), &QueryMsg::PoolInfo { poolid: 0 }).unwrap();
+        println!("numpools: {:?}\n poolinfo(0): {:?}",numpools,poolinfo);
+
+        assert_eq!(1, 0)
+
 
     }
 }
