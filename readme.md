@@ -1,5 +1,7 @@
 # Prizebooth Smart Contract
-Prizebooth smart contract is the smart contract used for managing the Ostrich Studios Prizebooth. It is written in CosmWasm, a multi-chain smart contract platform in rust. Note: this is still highly WIP and is not to be used for production.
+Prizebooth smart contract is the smart contract used for managing the Ostrich Studios Prizebooth. It is written in CosmWasm, a multi-chain smart contract platform in rust. 
+
+**Note: this is still highly WIP and is not to be used for production.**
 
 ## Architecture(WIP)
 ![architecture](Arch.png)
