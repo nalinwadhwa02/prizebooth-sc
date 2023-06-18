@@ -1,4 +1,5 @@
 use cosmwasm_schema::write_api;
+
 use prizebooth::msg::{InstantiateMsg, ExecuteMsg, QueryMsg};
 
 fn main() {
@@ -8,3 +9,4 @@ fn main() {
         query: QueryMsg,
     }
 }
+
