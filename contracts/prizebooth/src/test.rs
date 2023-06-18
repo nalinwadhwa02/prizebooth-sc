@@ -76,7 +76,6 @@ mod tests {
             owner_addr.clone(), 
             &InstantiateMsg{
                 cw20_addr: cw20_addr.clone().to_string(),
-                cw721_addr: cw721_addr.clone().to_string(),
                 admin: owner_addr.clone().to_string(),
             }, 
             &[], 
@@ -84,7 +83,7 @@ mod tests {
             None
         ).unwrap();
 
-        let mintnft = app.execute_contract(
+        let _mintnft = app.execute_contract(
             owner_addr.clone(), 
             cw721_addr.clone(), 
             &cw721_base::ExecuteMsg::<Empty, Empty>::Mint { 
@@ -96,14 +95,14 @@ mod tests {
             &[],
         ).unwrap();
 
-        let createpool = app.execute_contract(
+        let _createpool = app.execute_contract(
             owner_addr.clone(), 
             pb_addr.clone(),
             &ExecuteMsg::CreatePool { price: Uint128::new(5) }, 
             &[]
         ).unwrap();
 
-        let transferNft = app.execute_contract(
+        let _transfer_nft = app.execute_contract(
             owner_addr.clone(), 
             cw721_addr.clone(), 
             &cw721::Cw721ExecuteMsg::SendNft { 
@@ -114,14 +113,18 @@ mod tests {
             &[],
         ).unwrap();
 
-        let sendtokens = app.execute_contract(
+        let numpools: NumPoolsResponse = app.wrap().query_wasm_smart(pb_addr.clone(), &QueryMsg::NumPools {}).unwrap();
+        let poolinfo: PoolInfoResponse = app.wrap().query_wasm_smart(pb_addr.clone(), &QueryMsg::PoolInfo { poolid: 0 }).unwrap();
+        println!("numpools: {:?}\n poolinfo(0): {:?}",numpools,poolinfo);
+
+        let _sendtokens = app.execute_contract(
             owner_addr.clone(), 
             cw20_addr.clone(), 
             &cw20::Cw20ExecuteMsg::Transfer { recipient: user_addr.clone().to_string(), amount: Uint128::new(10) }, 
             &[] 
         ).unwrap();
 
-        let redeemtoken = app.execute_contract(
+        let _redeemtoken = app.execute_contract(
             user_addr.clone(), 
             cw20_addr.clone(), 
             &cw20::Cw20ExecuteMsg::Send { 

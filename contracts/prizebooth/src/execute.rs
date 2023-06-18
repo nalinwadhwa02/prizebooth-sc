@@ -4,7 +4,7 @@ use cw721::Cw721ReceiveMsg;
 
 use crate::msg::{RecieveNftMsg, RecieveTokenMsg};
 use crate::{error::ContractError};
-use crate::state::{NUMPOOLS, Pool, POOLS, ADMIN, CW20_ADDR, CW721_ADDR};
+use crate::state::{NUMPOOLS, Pool, POOLS, ADMIN, CW20_ADDR};
 
 pub fn create_pool (
     deps: DepsMut,
@@ -51,9 +51,6 @@ pub fn recieve_nft (
     info: MessageInfo,
     msg: Cw721ReceiveMsg,
 ) -> Result<Response, ContractError> {
-    if info.sender != CW721_ADDR.load(deps.storage)? {
-        return Err(ContractError::FaultyNftContract { addr: info.sender.clone().to_string() });
-    }
     let rmsg : RecieveNftMsg = from_binary(&msg.msg)?;
     let sender = deps.api.addr_validate(&msg.sender)?;
     if sender != ADMIN.load(deps.storage)? {
@@ -67,12 +64,12 @@ pub fn recieve_nft (
 pub fn add_nft (
     deps: DepsMut,
     _env: Env,
-    _info: MessageInfo,
+    info: MessageInfo,
     poolid: u32, 
     token_id: String,
 ) -> Result<Response, ContractError> {
     let mut pool = POOLS.may_load(deps.storage, poolid)?.unwrap();
-    pool.tokens.push(token_id.clone());
+    pool.tokens.push((token_id.clone(), info.sender.clone().to_string()));
     let update_pool= |d: Option<Pool>| -> StdResult<Pool> {
         match d {
             Some(_one) => Ok(pool),
@@ -89,6 +86,7 @@ pub fn remove_nft (
     info: MessageInfo,
     poolid: u32,
     token_id: String,
+    nft_contract: String,
 ) -> Result<Response, ContractError> {
     //ensure sender is admin
     let admin = ADMIN.load(deps.storage)?;
@@ -96,7 +94,7 @@ pub fn remove_nft (
         return Err(ContractError::Unauthorized { sender: info.sender.clone() });
     }
     let mut pool = POOLS.may_load(deps.storage, poolid)?.unwrap();
-    let index = pool.tokens.iter().position(|x| *x == token_id).unwrap();
+    let index = pool.tokens.iter().position(|x| *x == (token_id.clone(), nft_contract.clone())).unwrap();
     pool.tokens.remove(index);
     let update_pool= |d: Option<Pool>| -> StdResult<Pool> {
         match d {
@@ -107,7 +105,7 @@ pub fn remove_nft (
     POOLS.update(deps.storage, poolid, update_pool)?;
     //msg for token transfer
     let cw721_msg = CosmosMsg::Wasm(WasmMsg::Execute { 
-        contract_addr: CW721_ADDR.load(deps.storage)?.to_string(), 
+        contract_addr: nft_contract.clone(), 
         msg: to_binary(&cw721::Cw721ExecuteMsg::TransferNft { recipient: admin.to_string(), token_id: token_id.clone() })?, 
         funds: vec![],
     });
@@ -117,6 +115,7 @@ pub fn remove_nft (
         .add_attribute("action", "remove_nft")
         .add_attribute("poolid", poolid.clone().to_string())
         .add_attribute("token_id", token_id.clone())
+        .add_attribute("nft_contract", nft_contract.clone())
     ;
     Ok(resp)
 }
@@ -158,7 +157,7 @@ pub fn redeem_token (
 
     //get nftindex to redeem
     let nftindex = 0;
-    let token = pool.tokens[nftindex].clone();
+    let (token, nfttract) = pool.tokens[nftindex].clone();
     pool.tokens.remove(nftindex);
     let update_pool= |d: Option<Pool>| -> StdResult<Pool> {
         match d {
@@ -175,7 +174,7 @@ pub fn redeem_token (
     });
     //msg to send nft
     let cw721_msg = CosmosMsg::Wasm(WasmMsg::Execute { 
-        contract_addr: CW721_ADDR.load(deps.storage)?.to_string(), 
+        contract_addr: nfttract.clone(), 
         msg: to_binary(&cw721::Cw721ExecuteMsg::TransferNft { recipient: sender, token_id: token.clone() })?, 
         funds: vec![],
     });
@@ -186,14 +185,25 @@ pub fn redeem_token (
         .add_attribute("amount", amount.clone().to_string())
         .add_attribute("poolid", poolid.clone().to_string())
         .add_attribute("token_id", token.clone())
+        .add_attribute("nft_contract", nfttract.clone())
         )
 }
 
 pub fn update_admin (
-    _deps: DepsMut,
+    deps: DepsMut,
     _env: Env,
-    _info: MessageInfo,
-    _newadmin: String,
+    info: MessageInfo,
+    newadmin: String,
 ) -> Result<Response, ContractError> {
-    Ok(Response::new())
+    if info.sender.clone() != ADMIN.load(deps.storage)? {
+        return Err(ContractError::Unauthorized { sender: info.sender.clone() });
+    }
+    let newadmin = deps.api.addr_validate(&newadmin)?;
+    ADMIN.save(deps.storage, &newadmin)?;
+    let resp = Response::new()
+        .add_attribute("action", "update_admin")
+        .add_attribute("sender", info.sender.clone().to_string())
+        .add_attribute("new_admin", newadmin.clone().to_string())
+    ;
+    Ok(resp)
 }

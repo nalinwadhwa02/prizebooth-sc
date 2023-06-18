@@ -9,7 +9,7 @@ pub mod state;
 
 use msg::{InstantiateMsg, ExecuteMsg, QueryMsg};
 use error::ContractError;
-use state::{CW20_ADDR, CW721_ADDR, NUMPOOLS, ADMIN};
+use state::{CW20_ADDR, NUMPOOLS, ADMIN};
 
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn instantiate (
@@ -19,9 +19,8 @@ pub fn instantiate (
     msg: InstantiateMsg,
 ) -> StdResult<Response> {
     CW20_ADDR.save(deps.storage, &deps.api.addr_validate(msg.cw20_addr.as_str())?)?;
-    CW721_ADDR.save(deps.storage, &deps.api.addr_validate(msg.cw721_addr.as_str())?)?;
-    NUMPOOLS.save(deps.storage, &0)?;
     ADMIN.save(deps.storage, &deps.api.addr_validate(msg.admin.as_str())?)?;
+    NUMPOOLS.save(deps.storage, &0)?;
     Ok(Response::new())
 }
 
@@ -36,7 +35,7 @@ pub fn execute (
         ExecuteMsg::CreatePool { price } => execute::create_pool (deps, env, info, price),
         ExecuteMsg::RemovePool { poolid } => execute::remove_pool (deps, env, info, poolid),
         ExecuteMsg::ReceiveNft (msg) => execute::recieve_nft (deps, env, info, msg),
-        ExecuteMsg::RemoveNft { poolid, token_id } => execute::remove_nft (deps, env, info, poolid, token_id),
+        ExecuteMsg::RemoveNft { poolid, token_id , nft_contract } => execute::remove_nft (deps, env, info, poolid, token_id, nft_contract),
         ExecuteMsg::Receive (msg) => execute::recieve_token (deps, env, info, msg),
         ExecuteMsg::UpdateAdmin { addr } => execute::update_admin (deps, env, info, addr),
     }

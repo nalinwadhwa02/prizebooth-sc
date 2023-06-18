@@ -8,7 +8,6 @@ use crate::state::Pool;
 pub struct InstantiateMsg {
     pub admin: String,
     pub cw20_addr: String,
-    pub cw721_addr: String,
 }
 
 #[cw_serde]
@@ -27,7 +26,7 @@ pub enum ExecuteMsg {
     RemovePool { poolid: u32 },
 
     ReceiveNft (Cw721ReceiveMsg),
-    RemoveNft { poolid: u32, token_id: String },
+    RemoveNft { poolid: u32, token_id: String, nft_contract: String },
 
     Receive (Cw20ReceiveMsg),
     UpdateAdmin { addr: String },
